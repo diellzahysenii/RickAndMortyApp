@@ -1,8 +1,13 @@
 {
-    "title": "Rick-und-Morty-Charaktere",
-    "status": "Status",
-    "species": "Spezies",
-    "gender": "Geschlecht",
-    "origin": "Herkunft"
-  }
-  
+  "title": "Rick-und-Morty-Entdecker",
+  "status": "Status",
+  "species": "Spezies",
+  "gender": "Geschlecht",
+  "origin": "Herkunft",
+  "unknown": "Unbekannt",
+  "loading": "Weitere Charaktere werden geladen...",
+  "filter_by_status": "Nach Status filtern",
+  "filter_by_species": "Nach Spezies filtern",
+  "sort_by": "Sortieren nach",
+  "name": "Name"
+}

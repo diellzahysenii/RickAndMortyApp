@@ -3,15 +3,18 @@ import { useQuery } from "@apollo/client";
 import { GET_CHARACTERS } from "../graphql/queries";
 import Filters from "./Filters";
 import Sort from "./Sort";
+import { useTranslation } from "react-i18next";
 
 export default function CharacterList() {
+  const { t } = useTranslation();
+
   const [characters, setCharacters] = useState([]);
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("");
   const [speciesFilter, setSpeciesFilter] = useState("");
   const [sortBy, setSortBy] = useState("name");
 
-  const { loading, error, data, fetchMore } = useQuery(GET_CHARACTERS, {
+  const { loading, error, data } = useQuery(GET_CHARACTERS, {
     variables: {
       page,
       filter: {
@@ -22,12 +25,11 @@ export default function CharacterList() {
     notifyOnNetworkStatusChange: true,
   });
 
-  // Ref to last element for infinite scroll trigger
+  // Infinite Scroll Observer
   const observer = useRef();
   const lastCharacterRef = useCallback(
     (node) => {
       if (loading) return;
-
       if (observer.current) observer.current.disconnect();
 
       observer.current = new IntersectionObserver((entries) => {
@@ -41,7 +43,7 @@ export default function CharacterList() {
     [loading, data]
   );
 
-  // Add new characters to the list when data changes
+  // Update character list
   useEffect(() => {
     if (data?.characters?.results) {
       if (page === 1) {
@@ -52,7 +54,7 @@ export default function CharacterList() {
     }
   }, [data, page]);
 
-  // Reset characters when filters change
+  // Reset when filters change
   useEffect(() => {
     setPage(1);
   }, [statusFilter, speciesFilter]);
@@ -64,7 +66,7 @@ export default function CharacterList() {
   });
 
   const formatStatus = (status) => {
-    if (!status) return "Unknown";
+    if (!status) return t("unknown") || "Unknown";
     return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
   };
 
@@ -72,7 +74,7 @@ export default function CharacterList() {
 
   return (
     <div style={{ padding: "1rem" }}>
-      <h2>Characters</h2>
+      <h2 style={{ textAlign: "center" }}>{t("title")}</h2>
 
       <Filters
         statusFilter={statusFilter}
@@ -82,34 +84,41 @@ export default function CharacterList() {
       />
       <Sort sortBy={sortBy} setSortBy={setSortBy} />
 
-      <div style={{ display: "flex", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
         {sortedCharacters.map((char, index) => {
           const isLast = index === sortedCharacters.length - 1;
+
           return (
             <div
               key={char.id}
               ref={isLast ? lastCharacterRef : null}
               style={{
-                border: "1px solid #ccc",
+                border: "1px solid #ddd",
+                backgroundColor: "#fff",
                 padding: "1rem",
                 margin: "1rem",
-                width: "200px",
+                width: "220px",
                 borderRadius: "8px",
-                boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                transition: "transform 0.2s",
               }}
             >
-              <img src={char.image} alt={char.name} width="100%" />
-              <h3>{char.name}</h3>
-              <p>Status: {formatStatus(char.status)}</p>
-              <p>Species: {char.species}</p>
-              <p>Gender: {char.gender}</p>
-              <p>Origin: {char.origin.name}</p>
+              <img
+                src={char.image}
+                alt={char.name}
+                style={{ width: "100%", borderRadius: "5px" }}
+              />
+              <h3 style={{ marginTop: "0.5rem" }}>{char.name}</h3>
+              <p>{t("status")}: {formatStatus(char.status)}</p>
+              <p>{t("species")}: {char.species}</p>
+              <p>{t("gender")}: {char.gender}</p>
+              <p>{t("origin")}: {char.origin.name}</p>
             </div>
           );
         })}
       </div>
 
-      {loading && <p>Loading more characters...</p>}
+      {loading && <p style={{ textAlign: "center" }}>{t("loading") || "Loading more characters..."}</p>}
     </div>
   );
 }

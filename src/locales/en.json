@@ -1,8 +1,13 @@
 {
-    "title": "Rick and Morty Characters",
-    "status": "Status",
-    "species": "Species",
-    "gender": "Gender",
-    "origin": "Origin"
-  }
-  
+  "title": "Rick and Morty Explorer",
+  "status": "Status",
+  "species": "Species",
+  "gender": "Gender",
+  "origin": "Origin",
+  "unknown": "Unknown",
+  "loading": "Loading more characters...",
+  "filter_by_status": "Filter by Status",
+  "filter_by_species": "Filter by Species",
+  "sort_by": "Sort by",
+  "name": "Name"
+}
