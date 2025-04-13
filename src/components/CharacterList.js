@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_CHARACTERS } from "../graphql/queries";
 import Filters from "./Filters";
@@ -25,22 +25,22 @@ export default function CharacterList() {
     notifyOnNetworkStatusChange: true,
   });
 
-  const observer = useRef();
-  const lastCharacterRef = useCallback(
-    (node) => {
-      if (loading) return;
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && data?.characters?.info?.next) {
-          setPage((prev) => prev + 1);
-        }
-      });
-
-      if (node) observer.current.observe(node);
-    },
-    [loading, data]
-  );
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollTop = document.documentElement.scrollTop;
+      const clientHeight = document.documentElement.clientHeight;
+  
+      // If user scrolled within 300px of the bottom
+      if (scrollTop + clientHeight >= scrollHeight - 300 && data?.characters?.info?.next && !loading) {
+        setPage((prev) => prev + 1);
+      }
+    };
+  
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [data, loading]);
+  
 
   useEffect(() => {
     if (data?.characters?.results) {
@@ -71,7 +71,6 @@ export default function CharacterList() {
 
   return (
     <div>
-      <h2>{t("title")}</h2>
 
       <Filters
         statusFilter={statusFilter}
@@ -83,12 +82,10 @@ export default function CharacterList() {
 
       <div className="character-grid">
         {sortedCharacters.map((char, index) => {
-          const isLast = index === sortedCharacters.length - 1;
 
           return (
             <div
               key={char.id}
-              ref={isLast ? lastCharacterRef : null}
               className="character-card"
             >
               <img src={char.image} alt={char.name} />

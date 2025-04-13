@@ -1,15 +1,12 @@
 import React from "react";
 import CharacterList from "./components/CharacterList";
-import LanguageSwitcher from "./components/LanguageSwitcher";
+import Header from "./components/Header";
 import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <div className="lang-switcher">
-        <LanguageSwitcher />
-      </div>
-      <h1>Rick and Morty Explorer</h1>
+      <Header />
       <CharacterList />
     </div>
   );
