@@ -25,7 +25,6 @@ export default function CharacterList() {
     notifyOnNetworkStatusChange: true,
   });
 
-  // Infinite Scroll Observer
   const observer = useRef();
   const lastCharacterRef = useCallback(
     (node) => {
@@ -43,7 +42,6 @@ export default function CharacterList() {
     [loading, data]
   );
 
-  // Update character list
   useEffect(() => {
     if (data?.characters?.results) {
       if (page === 1) {
@@ -54,7 +52,6 @@ export default function CharacterList() {
     }
   }, [data, page]);
 
-  // Reset when filters change
   useEffect(() => {
     setPage(1);
   }, [statusFilter, speciesFilter]);
@@ -73,8 +70,8 @@ export default function CharacterList() {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h2 style={{ textAlign: "center" }}>{t("title")}</h2>
+    <div>
+      <h2>{t("title")}</h2>
 
       <Filters
         statusFilter={statusFilter}
@@ -84,7 +81,7 @@ export default function CharacterList() {
       />
       <Sort sortBy={sortBy} setSortBy={setSortBy} />
 
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
+      <div className="character-grid">
         {sortedCharacters.map((char, index) => {
           const isLast = index === sortedCharacters.length - 1;
 
@@ -92,23 +89,10 @@ export default function CharacterList() {
             <div
               key={char.id}
               ref={isLast ? lastCharacterRef : null}
-              style={{
-                border: "1px solid #ddd",
-                backgroundColor: "#fff",
-                padding: "1rem",
-                margin: "1rem",
-                width: "220px",
-                borderRadius: "8px",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                transition: "transform 0.2s",
-              }}
+              className="character-card"
             >
-              <img
-                src={char.image}
-                alt={char.name}
-                style={{ width: "100%", borderRadius: "5px" }}
-              />
-              <h3 style={{ marginTop: "0.5rem" }}>{char.name}</h3>
+              <img src={char.image} alt={char.name} />
+              <h3>{char.name}</h3>
               <p>{t("status")}: {formatStatus(char.status)}</p>
               <p>{t("species")}: {char.species}</p>
               <p>{t("gender")}: {char.gender}</p>

@@ -1,34 +1,118 @@
+/* Reset & base styles */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
   margin: 0;
-  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f8;
+  color: #333;
 }
 
-select,
-button {
-  padding: 5px 10px;
-  font-size: 14px;
-  margin-top: 0.5rem;
+/* App Layout */
+.App {
+  position: relative;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* Language Switcher */
+.lang-switcher {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.lang-switcher button {
+  background-color: #e0e0e0;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: bold;
   cursor: pointer;
 }
 
-h1,
-h2 {
+.lang-switcher button:hover {
+  background-color: #c9c9c9;
+}
+
+/* Headings */
+h1, h2 {
+  text-align: center;
   color: #2c3e50;
 }
 
+/* Filters + Sort */
+label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+select {
+  padding: 6px 8px;
+  margin-left: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* Character Grid */
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Character Card */
 .character-card {
-  border: 1px solid #ddd;
-  padding: 1rem;
-  margin: 1rem;
-  width: 200px;
-  border-radius: 10px;
-  background-color: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .character-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.character-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-bottom: 1px solid #eee;
+}
+
+.character-card h3 {
+  margin: 0.5rem;
+  font-size: 18px;
+  color: #2c3e50;
+}
+
+.character-card p {
+  margin: 0.25rem 0.5rem;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Responsive fixes */
+@media (max-width: 600px) {
+  .lang-switcher {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  select {
+    font-size: 13px;
+  }
+
+  .character-card h3 {
+    font-size: 16px;
+  }
+
+  .character-card p {
+    font-size: 13px;
+  }
 }
