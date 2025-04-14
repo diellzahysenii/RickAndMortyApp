@@ -27,8 +27,6 @@ A responsive React application that fetches and displays characters from the [Ri
 
 ---
 
-## 🚀 Getting Started
-
 ### 1. Clone the Repository
 
 ```bash
