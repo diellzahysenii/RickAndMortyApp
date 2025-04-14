@@ -3,6 +3,8 @@ import { useQuery } from "@apollo/client";
 import { GET_CHARACTERS } from "../graphql/queries";
 import Filters from "./Filters";
 import Sort from "./Sort";
+import Loader from "./Loader";
+import Error from "./Error";
 import { useTranslation } from "react-i18next";
 
 export default function CharacterList() {
@@ -25,23 +27,27 @@ export default function CharacterList() {
     notifyOnNetworkStatusChange: true,
   });
 
+  // Infinite scroll using scroll event
   useEffect(() => {
     const handleScroll = () => {
       const scrollHeight = document.documentElement.scrollHeight;
       const scrollTop = document.documentElement.scrollTop;
       const clientHeight = document.documentElement.clientHeight;
-  
-      // If user scrolled within 300px of the bottom
-      if (scrollTop + clientHeight >= scrollHeight - 300 && data?.characters?.info?.next && !loading) {
+
+      if (
+        scrollTop + clientHeight >= scrollHeight - 300 &&
+        data?.characters?.info?.next &&
+        !loading
+      ) {
         setPage((prev) => prev + 1);
       }
     };
-  
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [data, loading]);
-  
 
+  // Update character list when data changes
   useEffect(() => {
     if (data?.characters?.results) {
       if (page === 1) {
@@ -52,6 +58,7 @@ export default function CharacterList() {
     }
   }, [data, page]);
 
+  // Reset page when filters change
   useEffect(() => {
     setPage(1);
   }, [statusFilter, speciesFilter]);
@@ -67,11 +74,13 @@ export default function CharacterList() {
     return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
   };
 
-  if (error) return <p>Error: {error.message}</p>;
+  // Show full screen loader on first page load
+  if (loading && page === 1) return <Loader />;
+
+  if (error) return <Error message={error.message} />;
 
   return (
     <div>
-
       <Filters
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
@@ -81,25 +90,19 @@ export default function CharacterList() {
       <Sort sortBy={sortBy} setSortBy={setSortBy} />
 
       <div className="character-grid">
-        {sortedCharacters.map((char, index) => {
-
-          return (
-            <div
-              key={char.id}
-              className="character-card"
-            >
-              <img src={char.image} alt={char.name} />
-              <h3>{char.name}</h3>
-              <p>{t("status")}: {formatStatus(char.status)}</p>
-              <p>{t("species")}: {char.species}</p>
-              <p>{t("gender")}: {char.gender}</p>
-              <p>{t("origin")}: {char.origin.name}</p>
-            </div>
-          );
-        })}
+        {sortedCharacters.map((char) => (
+          <div key={char.id} className="character-card">
+            <img src={char.image} alt={char.name} />
+            <h3>{char.name}</h3>
+            <p>{t("status")}: {formatStatus(char.status)}</p>
+            <p>{t("species")}: {char.species}</p>
+            <p>{t("gender")}: {char.gender}</p>
+            <p>{t("origin")}: {char.origin.name}</p>
+          </div>
+        ))}
       </div>
 
-      {loading && <p style={{ textAlign: "center" }}>{t("loading") || "Loading more characters..."}</p>}
+      {loading && page > 1 && <Loader />}
     </div>
   );
 }
